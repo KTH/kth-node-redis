@@ -1,0 +1,6 @@
+# IDEA specific files
+*.iml
+.idea
+
+# Packages
+node_modules

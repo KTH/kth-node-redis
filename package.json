@@ -1,0 +1,31 @@
+{
+  "name": "kth-node-redis",
+  "version": "1.0.0",
+  "description": "Redis client module for Node.js. Everything with Promises!",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "codecheck": "standard",
+    "preversion": "npm run codecheck",
+    "postversion": "git push && git push --tags"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KTH/kth-node-redis"
+  },
+  "keywords": [
+    "node",
+    "redis"
+  ],
+  "peerDependencies": {
+    "kth-node-log": "https://github.com/KTH/kth-node-log.git#v1.0.0"
+  },
+  "dependencies": {
+    "bluebird": "^3.3.5",
+    "lodash": "^4.11.1",
+    "redis": "^2.5.3"
+  },
+  "devDependencies": {
+    "standard": "^7.0.0"
+  }
+}
