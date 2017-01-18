@@ -5,7 +5,7 @@ Redis client module for Node.js. Everything with Promises!
 ## Usage
 
 ```javascript
-const redis = require('kth-redis');
+const redis = require('kth-node-redis');
 
 // basics
 redis('default', { /* optional redis client config */ })
