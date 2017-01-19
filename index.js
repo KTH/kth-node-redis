@@ -3,7 +3,7 @@
 const logger = require('kth-node-log')
 const redis = require('redis')
 const Promise = require('bluebird')
-const deepAssign = require('deepAssign')
+const deepAssign = require('deep-assign')
 const { safeGet } = require('safe-utils')
 
 Promise.promisifyAll(redis.RedisClient.prototype)
