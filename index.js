@@ -3,22 +3,23 @@
 const logger = require('kth-node-log')
 const redis = require('redis')
 const Promise = require('bluebird')
-const _ = require('lodash')
+const deepAssign = require('deepAssign')
+const { safeGet } = require('safe-utils')
 
 Promise.promisifyAll(redis.RedisClient.prototype)
 Promise.promisifyAll(redis.Multi.prototype)
 
 const _defaults = {
   retry_strategy: function (options) {
-    if (options.error.code === 'ECONNREFUSED') {
+    if (safeGet(() => options.error.code === 'ECONNREFUSED')) {
       return new Error('Connection refused by server.')
     }
 
-    if (options.total_retry_time > 1000 * 60 * 60) {
+    if (safeGet(() => options.total_retry_time > 1000 * 60 * 60)) {
       return new Error('Retry time exhausted')
     }
 
-    if (options.times_connected > 10) {
+    if (safeGet(() => options.times_connected > 10)) {
       return undefined
     }
 
@@ -50,7 +51,8 @@ function _createClient (name, options, callback) {
   log.debug('Redis creating client')
   let isReady = false
 
-  const config = _.defaultsDeep(_defaults, options)
+  const config = {}
+  deepAssign(config, _defaults, options)
   let client = redis.createClient(config)
 
   callback = _once(callback)
