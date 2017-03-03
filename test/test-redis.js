@@ -1,6 +1,12 @@
 /* eslint-env mocha */
 
 const expect = require('chai').expect
+const mockRedis = require('redis-mock')
+
+mockRedis.Multi = {
+  prototype: Object.create(null)
+}
+
 const mockery = require('mockery')
 
 const mockLogger = {}
@@ -11,6 +17,7 @@ mockLogger.child = function () {
 // mockLogger.error = mockLogger.debug = mockLogger.info = mockLogger.warn = console.log
 
 mockery.registerMock('kth-node-log', mockLogger)
+mockery.registerMock('redis', mockRedis)
 mockery.enable({
   warnOnUnregistered: false
 })
@@ -26,5 +33,16 @@ describe('Redis', function () {
       expect(err).to.not.be.undefined
       done()
     })
+  })
+
+  it('should resolve a client with a default config', function () {
+    let client = redis.getClient('default')
+    expect(client).to.not.be.undefined
+  })
+
+  it('should returns a promise on a connectClient call', function () {
+    redis.getClient('default')
+    let connectedClient = redis.connectClient('default')
+    expect(connectedClient.constructor.name).to.be.equal('Promise')
   })
 })

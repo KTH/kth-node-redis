@@ -1,6 +1,7 @@
-# IDEA specific files
+# IDE specific files
 *.iml
 .idea
+.vscode
 
 # Packages
 node_modules

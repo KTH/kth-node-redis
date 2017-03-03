@@ -78,7 +78,7 @@ function _createClient (name, options, callback) {
   client.on('ready', function () {
     log.debug('Redis client ready')
     log.debug({ config: config }, 'Redis client config')
-    log.debug(`Redis server version: ${client.server_info.redis_version}`)
+    log.debug(`Redis server version: ${safeGet(() => client.server_info.redis_version)}`)
     isReady = true
     callback(null, client)
   })
@@ -120,6 +120,39 @@ module.exports = function (name, options) {
       } else {
         resolve(client)
       }
+    })
+  })
+}
+
+module.exports.getClient = function (name, options) {
+  name = name || _defaultName
+  let client = _clients[ name ]
+  if (client) {
+    return client
+  }
+
+  const config = {}
+  deepAssign(config, _defaults, options)
+  client = redis.createClient(config)
+  _clients[ name ] = client
+
+  client.on('end', function () {
+    client = null
+    delete _clients[ name ]
+  })
+  return client
+}
+
+module.exports.connectClient = function (clientName) {
+  let client = _clients[ clientName ]
+  if (!client) throw new Error('No such client: ' + clientName)
+  if (client.connected) return client // we are connected
+  return new Promise((resolve, reject) => {
+    client.on('ready', function () {
+      resolve(client)
+    })
+    client.on('error end warning', function (err) {
+      reject(err)
     })
   })
 }
