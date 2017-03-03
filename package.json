@@ -1,6 +1,6 @@
 {
   "name": "kth-node-redis",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Redis client module for Node.js. Everything with Promises!",
   "private": true,
   "main": "index.js",
