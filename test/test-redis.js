@@ -18,9 +18,12 @@ mockery.enable({
 const redis = require('../')
 
 describe('Redis', function () {
-  it('should get a standard config, with a connect_timeout of 2 seconds, if none is specified', function (done) {
-    redis('Testing', {url: null, port: null}).then(client => {
-      expect(client.connect_timeout).to.equal(2000)
+  it('should timeout after 2 seconds, if a bad uri is specified', function (done) {
+    this.timeout(3000)
+    redis('Testing', {uri: '', port: 0}).then(client => {
+      done()
+    }).catch(err => {
+      expect(err).to.not.be.undefined
       done()
     })
   })
