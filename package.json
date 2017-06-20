@@ -18,7 +18,7 @@
     "redis"
   ],
   "peerDependencies": {
-    "kth-node-log": "https://github.com/KTH/kth-node-log.git#v1.0.1"
+    "kth-node-log": "^2.0.0"
   },
   "dependencies": {
     "bluebird": "^3.3.5",
