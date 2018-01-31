@@ -60,7 +60,7 @@ function _createClient (name, options, callback) {
   _clients[ name ] = client
   _clients[ name ].log = log
 
-  log.debug({ clients: Object.keys(_clients) }, 'Redis clients')
+  log.debug({ clients: Object.keys(_clients) } + ' Redis clients')
 
   client.on('error', function (err) {
     log.error({ err: err }, 'Redis client error')
@@ -72,26 +72,26 @@ function _createClient (name, options, callback) {
   })
 
   client.on('connect', function () {
-    log.debug('Redis connected')
+    log.debug('Redis connected ' + name)
   })
 
   client.on('ready', function () {
-    log.debug('Redis client ready')
-    log.debug({ config: config }, 'Redis client config')
+    log.debug('Redis client ready ' + name)
+    log.debug({ config: config } + ' Redis client config')
     log.debug(`Redis server version: ${safeGet(() => client.server_info.redis_version)}`)
     isReady = true
     callback(null, client)
   })
 
   client.on('reconnecting', function () {
-    log.debug('Redis client reconnecting')
+    log.debug('Redis client reconnecting ' + name)
   })
 
   client.on('end', function () {
-    log.debug('Redis client end')
+    log.debug('Redis client end ' + name)
     client = null
     delete _clients[ name ]
-    log.debug({ clients: Object.keys(_clients) }, 'Redis clients')
+    log.debug({ clients: Object.keys(_clients) } + ' Redis clients')
     if (!isReady) {
       callback(new Error('Done - Failed to connect to Redis'))
     }
