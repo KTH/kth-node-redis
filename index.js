@@ -49,7 +49,7 @@ function _once (fn) {
 
 function _createClient (name, options, callback) {
   const log = logger.child({ redis: name })
-  log.debug('Redis creating client')
+  log.debug('Redis creating client: ' + name)
   let isReady = false
 
   const config = {}
@@ -72,11 +72,11 @@ function _createClient (name, options, callback) {
   })
 
   client.on('connect', function () {
-    log.debug('Redis connected ' + name)
+    log.debug('Redis connected: ' + name)
   })
 
   client.on('ready', function () {
-    log.debug('Redis client ready ' + name)
+    log.debug('Redis client ready: ' + name)
     log.debug({ config: config }, 'Redis client config')
     log.debug(`Redis server version: ${safeGet(() => client.server_info.redis_version)}`)
     isReady = true
@@ -84,14 +84,16 @@ function _createClient (name, options, callback) {
   })
 
   client.on('reconnecting', function () {
-    log.debug('Redis client reconnecting ' + name)
+    log.debug('Redis client reconnecting: ' + name)
   })
 
   client.on('end', function () {
-    log.debug('Redis client end ' + name)
+    log.debug('Redis client end: ' + name)
+    // Close the connection before removing reference.
+    client.quit()
     client = null
     delete _clients[ name ]
-    log.debug({ clients: Object.keys(_clients) }, 'Redis clients')
+    log.debug({ clients: Object.keys(_clients) }, 'Redis clients: ' + _clients.length)
     if (!isReady) {
       callback(new Error('Done - Failed to connect to Redis'))
     }
