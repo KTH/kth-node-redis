@@ -25,7 +25,7 @@ const _defaults = {
 
     return Math.max(options.attempt * 100, 3000)
   },
-  connect_timeout: 2000 // for initially connecting to redis. This prevents hanging on a bad REDIS_URI
+  connect_timeout: 10000 // for initially connecting to redis. This prevents hanging on a bad REDIS_URI (increased to 10s due to Azure)
 }
 
 const _defaultName = 'default'
