@@ -47,6 +47,12 @@ function _once (fn) {
   }
 }
 
+/**
+ * Creates a Redis client based on the given name and options.
+ * @param {*} name the given name for the Redis client.
+ * @param {*} options the given options for the Redis client.
+ * @param {*} callback
+ */
 function _createClient (name, options, callback) {
   const log = logger.child({ redis: name })
   log.debug('Redis creating client: ' + name)
@@ -126,6 +132,11 @@ module.exports = function (name, options) {
   })
 }
 
+/**
+ * Get Redis client based on the given client name.
+ * @param {*} name The name of the client to get.
+ * @param {*} options given options for Redis client
+ */
 module.exports.getClient = function (name, options) {
   name = name || _defaultName
   let client = _clients[ name ]
@@ -145,6 +156,11 @@ module.exports.getClient = function (name, options) {
   return client
 }
 
+/**
+ * Get a connected Redis client or a Promise if the given client is not connected.
+ * @param {*} clientName the name of the client to get.
+ * @returns {Promise} Promise that resolves to a Redis client or a Redis client if already connected.
+ */
 module.exports.connectClient = function (clientName) {
   let client = _clients[ clientName ]
   if (!client) throw new Error('No such client: ' + clientName)

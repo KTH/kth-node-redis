@@ -3,6 +3,8 @@
   "version": "1.2.7",
   "description": "Redis client module for Node.js. Everything with Promises!",
   "main": "index.js",
+  "license": "MIT",
+  "author": "KTH",
   "scripts": {
     "codecheck": "standard",
     "test": "mocha test/*",
@@ -18,19 +20,20 @@
     "redis"
   ],
   "peerDependencies": {
-    "kth-node-log": "^2.0.0"
+    "kth-node-log": "^3.0.2"
   },
   "dependencies": {
-    "bluebird": "^3.3.5",
+    "bluebird": "^3.5.2",
     "deep-assign": "^2.0.0",
-    "redis": "^2.5.3",
-    "safe-utils": "^0.1.1"
+    "kth-node-log": "^3.0.2",
+    "redis": "^2.8.0",
+    "safe-utils": "^0.2.1"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "mocha": "^3.2.0",
-    "mockery": "^2.0.0",
-    "redis-mock": "^0.16.0",
-    "standard": "^7.1.2"
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "mockery": "^2.1.0",
+    "redis-mock": "^0.33.0",
+    "standard": "^12.0.1"
   }
 }
