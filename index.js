@@ -83,7 +83,6 @@ function _createClient (name, options, callback) {
 
   client.on('ready', function () {
     log.debug('Redis client ready: ' + name)
-    log.debug({ config: config }, 'Redis client config')
     log.debug(`Redis server version: ${safeGet(() => client.server_info.redis_version)}`)
     isReady = true
     callback(null, client)
