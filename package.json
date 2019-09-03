@@ -4,7 +4,11 @@
   "description": "Redis client module for Node.js. Everything with Promises!",
   "main": "index.js",
   "license": "MIT",
-  "author": "KTH",
+  "author": {
+    "name": "KTH",
+    "email": "infosys@kth.se",
+    "url": "https://github.com/KTH"
+  },
   "scripts": {
     "codecheck": "prettier",
     "test": "mocha test/*",
