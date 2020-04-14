@@ -5,42 +5,46 @@ Redis client module for Node.js. Everything with Promises!
 ## Usage
 
 ```javascript
-const redis = require('kth-node-redis');
+const redis = require('kth-node-redis')
 
 // basics
-redis('default', { /* optional redis client config */ })
-  .then(function(client) {
-    return client.getAsync('key');
+redis('default', {
+  /* optional redis client config */
+})
+  .then(function (client) {
+    return client.getAsync('key')
   })
-  .then(function(value) {
+  .then(function (value) {
     // do something with value
   })
-  .catch(function(err) {
+  .catch(function (err) {
     // handle error
-  });
+  })
 
 // multi
-redis('default', { /* optional redis client config */ })
-  .then(function(client) {
-    return client.multi()
+redis('default', {
+  /* optional redis client config */
+})
+  .then(function (client) {
+    return client
+      .multi()
       .hmset('foo', { value: 'bar' })
       .expire('foo', 30)
       .hgetall('foo')
-      .execAsync();
+      .execAsync()
   })
-  .then(function(results) {
+  .then(function (results) {
     // results[1] => 'OK'
     // results[1] => 1
     // results[2] => { value: 'bar' }
-
     // results will depend on what commands are executed
   })
-  .catch(function(err) {
+  .catch(function (err) {
     // handle error
-  });
+  })
 
 // quit if needed
-redis.quit('default');
+redis.quit('default')
 ```
 
 ## Options
@@ -57,17 +61,21 @@ redis.quit('default');
 ```javascript
 function retry_strategy(options) {
   if (options.error.code === 'ECONNREFUSED') {
-    return new Error('Connection refused by server.');
+    return new Error('Connection refused by server.')
   }
 
   if (options.total_retry_time > 1000 * 60 * 60) {
-    return new Error('Retry time exhausted');
+    return new Error('Retry time exhausted')
   }
 
   if (options.times_connected > 10) {
-    return undefined;
+    return undefined
   }
 
-  return Math.max(options.attempt * 100, 3000);
+  return Math.max(options.attempt * 100, 3000)
 }
 ```
+
+## FEATURE_REDIS_USES_NEW_RETRY_STRATEGY
+
+Set `FEATURE_USE_NEW_RETRY_STRATEGY=true` in your application to try out an updated retry strategy. (April 2020)
