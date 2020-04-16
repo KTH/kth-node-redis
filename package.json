@@ -1,6 +1,6 @@
 {
   "name": "kth-node-redis",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "description": "Redis client module for Node.js. Everything with Promises!",
   "main": "lib/index.js",
   "license": "MIT",
@@ -43,9 +43,11 @@
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-jest": "^23.8.2",
     "eslint-plugin-prettier": "^3.1.2",
-    "prettier": "^2.0.4",
+    "husky": "^4.2.5",
     "jest": "^25.3.0",
     "jest-extended": "^0.11.5",
+    "prettier": "^2.0.4",
+    "pretty-quick": "^2.0.1",
     "redis-mock": "^0.49.0"
   },
   "prettier": {
@@ -65,5 +67,11 @@
     ],
     "testEnvironment": "node",
     "verbose": true
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm run test",
+      "pre-commit": "pretty-quick --staged"
+    }
   }
 }
