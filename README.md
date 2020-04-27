@@ -58,7 +58,7 @@ redis.quit('default')
 
 ## Default retry strategy
 
-```javascript
+```js
 function retry_strategy(options) {
   if (options.error.code === 'ECONNREFUSED') {
     return new Error('Connection refused by server.')
@@ -75,7 +75,3 @@ function retry_strategy(options) {
   return Math.max(options.attempt * 100, 3000)
 }
 ```
-
-## FEATURE_REDIS_USES_NEW_RETRY_STRATEGY
-
-Set `FEATURE_USE_NEW_RETRY_STRATEGY=true` in your application to try out an updated retry strategy. (April 2020)
