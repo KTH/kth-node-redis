@@ -262,9 +262,6 @@ RedisClient {
       "message": Array [
         [Function],
         [Function],
-        [Function],
-        [Function],
-        [Function],
       ],
     },
     "_eventsCount": 1,
