@@ -1,5 +1,3 @@
-/* eslint no-use-before-define: ["error", "nofunc"] */
-
 // @ts-check
 
 const mocks = {
@@ -10,30 +8,30 @@ const mocks = {
   fatal: jest.fn(),
 }
 
-module.exports = {
-  ...mocks,
-  child: jest.fn(() => mocks),
-  _listAllCalls,
-  _clearAllCalls,
-}
+const child = jest.fn(() => mocks)
 
 function _listAllCalls() {
   const allCalls = {}
-  let foundCall = false
 
   const mockedFunctions = Object.keys(mocks)
-
   mockedFunctions.forEach(name => {
     const { calls } = mocks[name].mock
     if (calls.length > 0) {
-      foundCall = true
       allCalls[name] = calls
     }
   })
 
-  return foundCall ? allCalls : null
+  return allCalls
 }
 
 function _clearAllCalls() {
+  child.mockClear()
   Object.values(mocks).forEach(func => func.mockClear())
+}
+
+module.exports = {
+  ...mocks,
+  child,
+  _listAllCalls,
+  _clearAllCalls,
 }
