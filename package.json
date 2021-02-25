@@ -50,16 +50,16 @@
       "@kth/eslint-config-kth"
     ]
   },
+  "// (prettier)": "configuration version 2020-06-15 - might also reside in .prettierrc.json",
   "prettier": {
-    "//": "configuration version 2020-04-10 - might also reside in .prettierrc.json",
     "arrowParens": "avoid",
-    "printWidth": 100,
+    "printWidth": 120,
     "semi": false,
     "singleQuote": true,
     "trailingComma": "es5"
   },
+  "// (jest)": "configuration version 2020-06-15 (API+NPM) - might also reside as module.exports in jest.config.js",
   "jest": {
-    "//": "configuration version 2020-04-10 (API+NPM) - might also reside as module.exports in jest.config.js",
     "clearMocks": true,
     "notifyMode": "failure-change",
     "setupFilesAfterEnv": [
