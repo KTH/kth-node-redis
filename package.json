@@ -43,11 +43,6 @@
     "pretty-quick": "^3.1.0",
     "redis-mock": "^0.56.3"
   },
-  "eslintConfig": {
-    "extends": [
-      "@kth/eslint-config-kth"
-    ]
-  },
   "// (prettier)": "configuration version 2020-06-15 - might also reside in .prettierrc.json",
   "prettier": {
     "arrowParens": "avoid",
