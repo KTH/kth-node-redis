@@ -30,15 +30,15 @@
   ],
   "dependencies": {
     "bluebird": "^3.7.2",
-    "kth-node-log": "^3.1.5",
+    "kth-node-log": "^3.1.6",
     "redis": "^3.1.2"
   },
   "devDependencies": {
     "@kth/eslint-config-kth": "^1.0.10",
     "@types/jest": "^26.0.23",
-    "eslint": "^7.26.0",
+    "eslint": "^7.27.0",
     "husky": "^6.0.0",
-    "jest": "^27.0.0",
+    "jest": "^27.0.3",
     "jest-extended": "^0.11.5",
     "prettier": "^2.3.0",
     "pretty-quick": "^3.1.0",
