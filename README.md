@@ -1,6 +1,6 @@
 # kth-node-redis
 
-Redis client module for Node.js. Everything with Promises!
+Redis client module for Node.js. (Everything with Promises)
 
 ## Usage
 
@@ -26,12 +26,7 @@ redis('default', {
   /* optional redis client config */
 })
   .then(function (client) {
-    return client
-      .multi()
-      .hmset('foo', { value: 'bar' })
-      .expire('foo', 30)
-      .hgetall('foo')
-      .execAsync()
+    return client.multi().hmset('foo', { value: 'bar' }).expire('foo', 30).hgetall('foo').execAsync()
   })
   .then(function (results) {
     // results[1] => 'OK'
