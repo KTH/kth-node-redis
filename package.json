@@ -31,7 +31,7 @@
   "dependencies": {
     "bluebird": "^3.7.2",
     "kth-node-log": "^3.1.9",
-    "redis": "^3.1.2"
+    "redis": "^4.0.0"
   },
   "devDependencies": {
     "@kth/eslint-config-kth": "^2.0.1",
