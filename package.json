@@ -29,19 +29,19 @@
     "redis"
   ],
   "dependencies": {
+    "@kth/log": "^4.0.0",
     "bluebird": "^3.7.2",
-    "kth-node-log": "^3.1.9",
     "redis": "^3.1.2"
   },
   "devDependencies": {
     "@kth/eslint-config-kth": "^2.0.1",
     "@types/jest": "^26.0.23",
+    "ansi-regex": "^6.0.1",
     "jest-extended": "^0.11.5",
     "prettier": "^2.4.1",
     "pretty-quick": "^3.1.1",
     "redis-mock": "^0.56.3",
-    "set-value": "^4.1.0",
-    "ansi-regex": "^6.0.1"
+    "set-value": "^4.1.0"
   },
   "prettier": {
     "arrowParens": "avoid",
