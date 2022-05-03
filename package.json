@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "@kth/eslint-config-kth": "^3.0.9",
-    "@types/jest": "^26.0.24",
+    "@types/jest": "^27.5.0",
     "ansi-regex": "^6.0.1",
     "jest-extended": "^0.11.5",
     "prettier": "^2.6.2",
