@@ -32,7 +32,7 @@
     "@kth/log": "^4.0.5",
     "bluebird": "^3.7.2",
     "eslint": "^8.23.1",
-    "redis": "^3.1.2"
+    "redis": "^4.4.0"
   },
   "overrides": {
     "semver-regex": "^3.1.3"
