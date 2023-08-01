@@ -7,6 +7,3 @@
 node_modules
 
 coverage
-
-# We don't store package-lock.json in NPM packages
-package-lock.json
