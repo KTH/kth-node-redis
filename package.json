@@ -4,6 +4,9 @@
   "description": "Redis client module for Node.js. Everything with Promises!",
   "main": "lib/index.js",
   "license": "MIT",
+  "files": [
+    "lib"
+  ],
   "author": {
     "name": "KTH",
     "email": "infosys@kth.se",
