@@ -3,7 +3,6 @@
   "version": "3.1.46",
   "description": "Redis client module for Node.js. Everything with Promises!",
   "main": "lib/index.js",
-  "automaticPublish": "true",
   "license": "MIT",
   "author": {
     "name": "KTH",
