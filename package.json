@@ -33,7 +33,7 @@
   "dependencies": {
     "@kth/log": "^4.0.7",
     "bluebird": "^3.7.2",
-    "redis": "^3.1.2"
+    "redis": "^5.0.0"
   },
   "overrides": {
     "semver-regex": "^3.1.3"
