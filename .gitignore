@@ -3,6 +3,8 @@
 .idea
 .vscode
 
+dist
+
 # Packages
 node_modules
 

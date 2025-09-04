@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "isolatedModules": true,
+    "target": "ESNext",
+    "outDir": "dist",
+    "rootDir": "src",
+    "esModuleInterop": true,
+    "declaration": true,
+    "strict": true
+  },
+  "include": ["src/**/*", "node_modules/jest-extended/types/**/*.d.ts"],
+  "exclude": ["src/**/*.test.ts"]
+}
