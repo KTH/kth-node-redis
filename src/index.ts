@@ -1,7 +1,7 @@
 import * as redis from 'redis'
 import { RedisClientType } from 'redis'
-
-type TypePlaceholder = any
+import { parseConfig } from './config'
+import { KthRedisConfig } from './types'
 
 export type RedisClient = RedisClientType<any>
 
@@ -9,15 +9,15 @@ export const version = 'kth-node-redis-4'
 
 const globalClients: Record<string, RedisClient> = {}
 
-export const getClient = async (name = 'default', options: TypePlaceholder): Promise<RedisClient> => {
-  const config = { ...options }
+export const getClient = async (name = 'default', options?: KthRedisConfig): Promise<RedisClient> => {
+  const config = parseConfig(options)
 
   const thisClient = globalClients[name]
   if (thisClient) {
     return thisClient
   }
 
-  const client = redis.createClient()
+  const client = redis.createClient({ name, ...config })
 
   globalClients[name] = client as RedisClient
   await client.connect()
