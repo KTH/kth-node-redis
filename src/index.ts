@@ -3,6 +3,8 @@ import { RedisClientType } from 'redis'
 import { parseConfig } from './config'
 import { KthRedisConfig } from './types'
 
+const log = require('@kth/log')
+
 export type RedisClient = RedisClientType<any>
 
 export const version = 'kth-node-redis-4'
@@ -14,15 +16,44 @@ export const getClient = async (name = 'default', options?: KthRedisConfig): Pro
 
   const thisClient = globalClients[name]
   if (thisClient) {
+    if (!(thisClient.isOpen && thisClient.isReady)) {
+      await thisClient.connect()
+    }
+
     return thisClient
   }
 
   const client = redis.createClient({ name, ...config })
 
+  client.on('connect', () => log.debug(`kth-node-redis: Redis connected: ${name}`))
+  client.on('ready', () => log.info(`kth-node-redis: Redis client ready: ${name}`))
+  client.on('reconnecting', () => log.info(`kth-node-redis: Redis client reconnecting: ${name}`))
+
+  client.on('error', error => {
+    log.error('kth-node-redis: Redis client error terminated', { event: 'error', error })
+
+    try {
+      client.destroy()
+    } catch (error) {
+      log.debug('kth-node-redis: Failed to destroy client', error)
+    }
+    delete globalClients[name]
+  })
+
+  client.on('end', () => {
+    log.debug(`kth-node-redis: Redis client end: ${name}`)
+    delete globalClients[name]
+  })
+
   globalClients[name] = client as RedisClient
+
   await client.connect()
 
-  return client as RedisClient
+  if (client.isOpen && client.isReady) {
+    return client as RedisClient
+  }
+
+  throw new Error('kth-node-redis: Could not connect client')
 }
 
 // Compatability with cjs "require"

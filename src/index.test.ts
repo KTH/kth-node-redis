@@ -9,6 +9,8 @@ jest.mock('redis', () => ({ createClient: jest.fn(() => mockClient) }))
 const mockClient = {
   on: jest.fn(),
   connect: jest.fn(),
+  isOpen: true,
+  isReady: true,
 }
 const mockParseConfig = parseConfig as jest.Mock
 
