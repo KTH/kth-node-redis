@@ -16,7 +16,7 @@ const globalClients: Record<string, RedisClient> = {}
 export const getClient = async (name = 'default', options?: KthRedisConfig): Promise<RedisClient> => {
   const config = parseConfig(options)
 
-  const cleanup = () => {
+  const abortAndCleanup = () => {
     try {
       client.destroy()
     } catch (error) {
@@ -26,7 +26,7 @@ export const getClient = async (name = 'default', options?: KthRedisConfig): Pro
   }
 
   config.socket = config.socket || {}
-  config.socket.reconnectStrategy = createStrategy(cleanup)
+  config.socket.reconnectStrategy = createStrategy(abortAndCleanup)
 
   const thisClient = globalClients[name]
   if (thisClient) {
@@ -45,6 +45,14 @@ export const getClient = async (name = 'default', options?: KthRedisConfig): Pro
 
   client.on('error', error => {
     log.error('kth-node-redis: Redis client error', { error })
+
+    if (error instanceof redis.SimpleError && error.message.includes('ERR AUTH <password>')) {
+      abortAndCleanup()
+    }
+
+    if (error instanceof redis.SimpleError && error.message.includes('WRONGPASS')) {
+      abortAndCleanup()
+    }
   })
 
   client.on('end', () => {
