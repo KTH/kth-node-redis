@@ -1,6 +1,7 @@
 import * as redis from 'redis'
 import { RedisClientType } from 'redis'
 import { parseConfig } from './config'
+import { createStrategy } from './reconnect-strategy'
 import { KthRedisConfig } from './types'
 
 const log = require('@kth/log')
@@ -13,6 +14,18 @@ const globalClients: Record<string, RedisClient> = {}
 
 export const getClient = async (name = 'default', options?: KthRedisConfig): Promise<RedisClient> => {
   const config = parseConfig(options)
+
+  const cleanup = () => {
+    try {
+      client.destroy()
+    } catch (error) {
+      log.debug('kth-node-redis: Failed to destroy client', error)
+    }
+    delete globalClients[name]
+  }
+
+  config.socket = config.socket || {}
+  config.socket.reconnectStrategy = createStrategy(cleanup)
 
   const thisClient = globalClients[name]
   if (thisClient) {
@@ -30,19 +43,11 @@ export const getClient = async (name = 'default', options?: KthRedisConfig): Pro
   client.on('reconnecting', () => log.info(`kth-node-redis: Redis client reconnecting: ${name}`))
 
   client.on('error', error => {
-    log.error('kth-node-redis: Redis client error terminated', { event: 'error', error })
-
-    try {
-      client.destroy()
-    } catch (error) {
-      log.debug('kth-node-redis: Failed to destroy client', error)
-    }
-    delete globalClients[name]
+    log.error('kth-node-redis: Redis client error', { error })
   })
 
   client.on('end', () => {
     log.debug(`kth-node-redis: Redis client end: ${name}`)
-    delete globalClients[name]
   })
 
   globalClients[name] = client as RedisClient

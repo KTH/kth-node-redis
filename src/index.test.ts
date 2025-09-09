@@ -1,9 +1,11 @@
-import { getClient } from './index'
-import { parseConfig } from './config'
 import * as redis from 'redis'
+import { parseConfig } from './config'
+import { createStrategy } from './reconnect-strategy'
 import { KthRedisConfig } from './types'
+import { getClient } from './index'
 
 jest.mock('./config')
+jest.mock('./reconnect-strategy')
 jest.mock('redis', () => ({ createClient: jest.fn(() => mockClient) }))
 
 const mockClient = {
@@ -13,8 +15,12 @@ const mockClient = {
   isReady: true,
 }
 const mockParseConfig = parseConfig as jest.Mock
+const mockCreateStrategy = createStrategy as jest.Mock
 
 describe('Create client', () => {
+  beforeEach(() => {
+    mockParseConfig.mockReturnValue({})
+  })
   afterEach(() => {
     jest.clearAllMocks()
     jest.restoreAllMocks()
@@ -35,5 +41,17 @@ describe('Create client', () => {
 
     expect(parseConfig).toHaveBeenCalledWith(myConfig)
     expect(redis.createClient).toHaveBeenCalledWith(expect.objectContaining({ setting1: 1, addedSetting: 'new stuff' }))
+  })
+  it('Adds a retry strategy', async () => {
+    const mockStrategy = () => {}
+
+    mockCreateStrategy.mockReturnValueOnce(mockStrategy)
+
+    await getClient('testClientRetryStrategy')
+
+    expect(mockCreateStrategy).toHaveBeenCalledWith(expect.any(Function))
+    expect(redis.createClient).toHaveBeenCalledWith(
+      expect.objectContaining({ socket: { reconnectStrategy: mockStrategy } })
+    )
   })
 })
