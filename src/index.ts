@@ -7,6 +7,7 @@ import { KthRedisConfig } from './types'
 const log = require('@kth/log')
 
 export type RedisClient = RedisClientType<any>
+export type { KthRedisConfig } from './types'
 
 export const version = 'kth-node-redis-4'
 

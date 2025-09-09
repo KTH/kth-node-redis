@@ -3,19 +3,32 @@ import { RedisClientOptions } from 'redis'
 export type KthConfigurationUnpackedRedisConfig = {
   host: string
   port: number
+
+  /**
+   * For TLS connections, use tls: { servername: [SAME_AS_HOST] }
+   */
   tls?: {
     servername: string
   }
+
+  /**
+   * Redis password
+   */
   auth_pass?: string
+
+  /**
+   * Not used, kept for compatability
+   */
+  abortConnect?: any
 }
 
 export const parseConfig = (opts: any = {}): RedisClientOptions => {
-  if (typeof opts === 'object' && JSON.stringify(opts) === '{}') {
-    return {}
-  }
-
   if (isKthConfig(opts)) {
     return parseKthConfig(opts as KthConfigurationUnpackedRedisConfig)
+  }
+
+  if (typeof opts === 'object') {
+    return opts
   }
 
   throw new Error('Unknown Redis config')

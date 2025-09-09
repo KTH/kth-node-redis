@@ -1,3 +1,4 @@
+import { RedisClientOptions } from 'redis'
 import { KthConfigurationUnpackedRedisConfig } from './config'
 
-export type KthRedisConfig = KthConfigurationUnpackedRedisConfig
+export type KthRedisConfig = RedisClientOptions | KthConfigurationUnpackedRedisConfig

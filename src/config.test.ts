@@ -2,7 +2,7 @@ import { RedisClientOptions } from 'redis'
 import { parseConfig } from './config'
 
 describe('Config parsing', () => {
-  describe('From "unpackRedisConfig" in package "kth-node-configuration', () => {
+  describe('Transform config from "unpackRedisConfig" in package "kth-node-configuration', () => {
     test('when config is based on Azure connection string', () => {
       const options = {
         host: 'app-name.redis.cache.windows.net',
@@ -38,6 +38,35 @@ describe('Config parsing', () => {
       expect(result).toEqual(expectation)
     })
   })
+  describe('Allow other formats to pass', () => {
+    test('return config as is if it has "url"', () => {
+      const options = {
+        url: 'redis://my-server',
+      }
+
+      const result = parseConfig(options)
+
+      expect(result).toEqual(options)
+    })
+    test('return config as is if it has "socket.host"', () => {
+      const options = {
+        socket: { host: 'my-server' },
+      }
+
+      const result = parseConfig(options)
+
+      expect(result).toEqual(options)
+    })
+    test('return config as is if it has "socket.port"', () => {
+      const options = {
+        socket: { port: 7000 },
+      }
+
+      const result = parseConfig(options)
+
+      expect(result).toEqual(options)
+    })
+  })
   it('returns empty object when empty object is passed', () => {
     const options = {}
 
@@ -55,7 +84,7 @@ describe('Config parsing', () => {
     expect(result).toEqual(expectation)
   })
   it('throws when unknown format is passed', () => {
-    const options = { value: 'This is not expected' }
+    const options = 'invalid-config'
 
     expect(() => parseConfig(options)).toThrow()
   })
