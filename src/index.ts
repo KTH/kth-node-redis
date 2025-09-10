@@ -30,7 +30,7 @@ export const getClient = async (name = 'default', options?: KthRedisConfig): Pro
 
   const thisClient = globalClients[name]
   if (thisClient) {
-    if (!(thisClient.isOpen && thisClient.isReady)) {
+    if (!thisClient.isOpen) {
       await thisClient.connect()
     }
 
