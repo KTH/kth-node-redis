@@ -1,5 +1,12 @@
 import { RedisClientOptions } from 'redis'
 
+interface redisSocketOptions {
+  host?: string
+  port?: number
+}
+
+const AZURE_SERVER_HOSTNAME = 'redis.cache.windows.net'
+
 export type KthConfigurationUnpackedRedisConfig = {
   host: string
   port: number
@@ -48,4 +55,11 @@ const parseKthConfig = (options: KthConfigurationUnpackedRedisConfig): RedisClie
     socket: { host, port, tls },
     password,
   }
+}
+
+export const isAzureServer = (config: RedisClientOptions) => {
+  const socket = (config.socket as redisSocketOptions) || {}
+  const host = socket.host || ''
+
+  return config.url?.includes?.(AZURE_SERVER_HOSTNAME) || host.includes?.(AZURE_SERVER_HOSTNAME) || false
 }

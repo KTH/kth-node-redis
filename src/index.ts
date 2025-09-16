@@ -1,6 +1,6 @@
 import * as redis from 'redis'
 import { RedisClientType } from 'redis'
-import { parseConfig } from './config'
+import { parseConfig, isAzureServer } from './config'
 import { createStrategy } from './reconnect-strategy'
 import { KthRedisConfig } from './types'
 
@@ -25,8 +25,12 @@ export const getClient = async (name = 'default', options?: KthRedisConfig): Pro
     delete globalClients[name]
   }
 
-  config.socket = config.socket || {}
+  config.socket = config?.socket || {}
   config.socket.reconnectStrategy = createStrategy(abortAndCleanup)
+
+  if (isAzureServer(config)) {
+    config.pingInterval = 5 * 60 * 1000
+  }
 
   const thisClient = globalClients[name]
   if (thisClient) {
