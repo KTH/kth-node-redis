@@ -71,6 +71,7 @@ export const getClient = async (name = 'default', options?: KthRedisConfig): Pro
     return client as RedisClient
   }
 
+  abortAndCleanup()
   throw new Error('kth-node-redis: Could not connect client')
 }
 
