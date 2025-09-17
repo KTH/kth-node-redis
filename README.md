@@ -60,6 +60,8 @@ getClient('default').then(function (client) {
 No more callback based methods.  
 Promised based methods have new names.
 
+If used in combination with `@kth/api-call`, that needs to be at least version 4.4.0
+
 If you are using `client.get`, change to a promise based approach like:
 
 ```javascript

@@ -16,6 +16,7 @@ Bluebird wrapper is removed, and all callback based methods.
 - **Breaking:** Client is now based on redis@5 instead of redis@3.
 - **Breaking:** All methods is now promised based instead of callback based.
 - **Breaking:** Some methods have minor name changes, like `hgetall` -> `hGetAll`.
+- **Breaking:** If used in combination with `@kth/api-call`, that needs to be at least version 4.4.0.
 
 ### Removed
 
