@@ -16,29 +16,27 @@ const globalClients: Record<string, RedisClient> = {}
 export const getClient = async (name = 'default', options?: KthRedisConfig): Promise<RedisClient> => {
   const config = parseConfig(options)
 
-  const abortAndCleanup = () => {
+  const destroyClient = () => {
     try {
-      client.destroy()
+      globalClients[name]?.destroy()
     } catch (error) {
       log.debug('kth-node-redis: Failed to destroy client', error)
     }
-    delete globalClients[name]
   }
 
   config.socket = config?.socket || {}
-  config.socket.reconnectStrategy = createStrategy(abortAndCleanup)
+  config.socket.reconnectStrategy = createStrategy(destroyClient)
 
   if (isAzureServer(config)) {
     config.pingInterval = 5 * 60 * 1000
   }
 
-  const thisClient = globalClients[name]
-  if (thisClient) {
-    if (!thisClient.isOpen) {
-      await thisClient.connect()
+  const existingClient = globalClients[name]
+  if (existingClient) {
+    if (!existingClient.isOpen) {
+      await existingClient.connect()
     }
-
-    return thisClient
+    return existingClient
   }
 
   const client = redis.createClient({ name, ...config })
@@ -51,27 +49,28 @@ export const getClient = async (name = 'default', options?: KthRedisConfig): Pro
     log.error('kth-node-redis: Redis client error', { error })
 
     if (error instanceof redis.SimpleError && error.message.includes('ERR AUTH <password>')) {
-      abortAndCleanup()
+      destroyClient()
     }
 
     if (error instanceof redis.SimpleError && error.message.includes('WRONGPASS')) {
-      abortAndCleanup()
+      destroyClient()
     }
   })
 
   client.on('end', () => {
+    delete globalClients[name]
     log.debug(`kth-node-redis: Redis client end: ${name}`)
   })
 
   globalClients[name] = client as RedisClient
-
   await client.connect()
 
   if (client.isOpen && client.isReady) {
-    return client as RedisClient
+    return globalClients[name]
   }
 
-  abortAndCleanup()
+  destroyClient()
+  delete globalClients[name]
   throw new Error('kth-node-redis: Could not connect client')
 }
 

@@ -1,20 +1,20 @@
 import { ConnectionTimeoutError, SocketTimeoutError } from 'redis'
 
 export const createStrategy =
-  (cleanup: () => void) =>
+  (onAbort: () => void) =>
   (retries: number, cause: Error): false | Error | number => {
     if (retries >= 4) {
-      cleanup()
+      onAbort()
       return false
     }
 
     if (cause instanceof SocketTimeoutError) {
-      cleanup()
+      onAbort()
       return false
     }
 
     if (cause instanceof ConnectionTimeoutError) {
-      cleanup()
+      onAbort()
       return false
     }
 
