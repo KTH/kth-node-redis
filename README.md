@@ -1,18 +1,20 @@
 # kth-node-redis
 
-Redis client module for Node.js. (Everything with Promises)
+Redis client module for Node.js.  
+It can keep multiple active client, differentiated by the "name" parameter.
 
 ## Usage
 
 ```javascript
-const redis = require('kth-node-redis')
+import { getClient } from 'kth-node-redis'
+// const redis = require('kth-node-redis') // alternative default import
 
 // basics
-redis('default', {
+getClient('default', {
   /* optional redis client config */
 })
   .then(function (client) {
-    return client.getAsync('key')
+    return client.get('key')
   })
   .then(function (value) {
     // do something with value
@@ -22,14 +24,14 @@ redis('default', {
   })
 
 // multi
-redis('default', {
+getClient('default', {
   /* optional redis client config */
 })
   .then(function (client) {
-    return client.multi().hmset('foo', { value: 'bar' }).expire('foo', 30).hgetall('foo').execAsync()
+    return client.multi().hSet('foo', { value: 'bar' }).expire('foo', 30).hGetAll('foo').exec()
   })
   .then(function (results) {
-    // results[1] => 'OK'
+    // results[1] => 1
     // results[1] => 1
     // results[2] => { value: 'bar' }
     // results will depend on what commands are executed
@@ -39,7 +41,9 @@ redis('default', {
   })
 
 // quit if needed
-redis.quit('default')
+getClient('default').then(function (client) {
+  client.destroy()
+})
 ```
 
 ## Options
@@ -47,26 +51,26 @@ redis.quit('default')
 - `name` optional name, defaults to `default`. Use the same name to get
   the same client instance or re-create it. Use a new name to create a
   new instance.
-- `options` optional config for the Redis client. Has a default retry
-  strategy. See below for details. For info about the Redis client
-  options, see https://www.npmjs.com/package/redis.
+- `options` optional config for the Redis client. Compatible with either:
+  - Output from `unpackRedisConfig` in package [kth-node-configuration](https://github.com/KTH/kth-node-configuration)
+  - Configuration native to [redis@5](https://raw.githubusercontent.com/redis/node-redis/refs/heads/master/docs/client-configuration.md)
 
-## Default retry strategy
+## Migrate 3 -> 4
 
-```js
-function retry_strategy(options) {
-  if (options.error.code === 'ECONNREFUSED') {
-    return new Error('Connection refused by server.')
-  }
+No more callback based methods.  
+Promised based methods have new names.
 
-  if (options.total_retry_time > 1000 * 60 * 60) {
-    return new Error('Retry time exhausted')
-  }
+If you are using `client.get`, change to a promise based approach like:
 
-  if (options.times_connected > 10) {
-    return undefined
-  }
+```javascript
+// Old v3 code
+client.get('my_key', data => {
+  console.log('got data', data)
+})
 
-  return Math.max(options.attempt * 100, 3000)
-}
+// New v4 code
+const data = await client.get('my_key')
+console.log('got data', data)
 ```
+
+If you are using `client.getAsync`, it should be fine to just use `client.get` instead.
