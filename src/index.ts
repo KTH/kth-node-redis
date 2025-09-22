@@ -13,19 +13,43 @@ export const version = 'kth-node-redis-4'
 
 const globalClients: Record<string, RedisClient> = {}
 
+const destroyClient = (name: string) => {
+  try {
+    globalClients[name]?.destroy()
+  } catch (error) {
+    log.debug('kth-node-redis: Failed to destroy client', error)
+  }
+}
 export const getClient = async (name = 'default', options?: KthRedisConfig): Promise<RedisClient> => {
-  const config = parseConfig(options)
-
-  const destroyClient = () => {
-    try {
-      globalClients[name]?.destroy()
-    } catch (error) {
-      log.debug('kth-node-redis: Failed to destroy client', error)
+  const existingClient = globalClients[name]
+  if (existingClient) {
+    if (!existingClient.isOpen) {
+      await existingClient.connect()
     }
+    return existingClient
+  }
+  const client = createClient(name, options)
+
+  await client.connect()
+
+  if (client.isOpen && client.isReady) {
+    return globalClients[name]
   }
 
+  destroyClient(name)
+  delete globalClients[name]
+  throw new Error('kth-node-redis: Could not connect client')
+}
+
+export const createClient = (name = 'default', options?: KthRedisConfig): RedisClient => {
+  const destroyThisClient = () => {
+    destroyClient(name)
+  }
+
+  const config = parseConfig(options)
+
   config.socket = config?.socket || {}
-  config.socket.reconnectStrategy = createStrategy(destroyClient)
+  config.socket.reconnectStrategy = createStrategy(destroyThisClient)
 
   if (isAzureServer(config)) {
     config.pingInterval = 5 * 60 * 1000
@@ -33,9 +57,6 @@ export const getClient = async (name = 'default', options?: KthRedisConfig): Pro
 
   const existingClient = globalClients[name]
   if (existingClient) {
-    if (!existingClient.isOpen) {
-      await existingClient.connect()
-    }
     return existingClient
   }
 
@@ -49,11 +70,11 @@ export const getClient = async (name = 'default', options?: KthRedisConfig): Pro
     log.error('kth-node-redis: Redis client error', { error })
 
     if (error instanceof redis.SimpleError && error.message.includes('ERR AUTH <password>')) {
-      destroyClient()
+      destroyThisClient()
     }
 
     if (error instanceof redis.SimpleError && error.message.includes('WRONGPASS')) {
-      destroyClient()
+      destroyThisClient()
     }
   })
 
@@ -63,20 +84,14 @@ export const getClient = async (name = 'default', options?: KthRedisConfig): Pro
   })
 
   globalClients[name] = client as RedisClient
-  await client.connect()
 
-  if (client.isOpen && client.isReady) {
-    return globalClients[name]
-  }
-
-  destroyClient()
-  delete globalClients[name]
-  throw new Error('kth-node-redis: Could not connect client')
+  return globalClients[name]
 }
 
 // Compatability with cjs "require"
 module.exports = getClient
 module.exports.getClient = getClient
+module.exports.createClient = createClient
 module.exports.version = version
 // Compatability with cjs "require"
 

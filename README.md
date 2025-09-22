@@ -5,6 +5,11 @@ It can keep multiple active client, differentiated by the "name" parameter.
 
 ## Usage
 
+### getClient
+
+An async operation, that creates and connects a client.  
+Will reuse and/or reconnect existing clients with the same name.
+
 ```javascript
 import { getClient } from 'kth-node-redis'
 // const redis = require('kth-node-redis') // alternative default import
@@ -44,6 +49,21 @@ getClient('default', {
 getClient('default').then(function (client) {
   client.destroy()
 })
+```
+
+### createClient
+
+A non-blocking operation that creates a client, without connecting it.  
+Useful when you need to supply a client to a third-party library.
+
+The same client names can be used in combination with `getClient`.
+
+```javascript
+import { createClient } from 'kth-node-redis'
+
+const myClient = createClient'default', { /* optional redis client config */ })
+
+const externalLib = new ExternalLibrary({redisClient: myClient})
 ```
 
 ## Options
