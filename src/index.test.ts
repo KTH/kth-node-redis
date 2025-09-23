@@ -69,7 +69,6 @@ describe('getClient (creates and connects a client)', () => {
       const myConfig = { url: 'server.to.check' }
       mockParseConfig.mockReturnValueOnce(myConfig)
 
-      // mockIsAzureServer.mockReturnValueOnce(true)
       await getClient(randomizeName())
       expect(mockIsAzureServer).toHaveBeenCalledWith(myConfig)
     })
@@ -169,31 +168,31 @@ describe('createClient (creates a client)', () => {
     jest.clearAllMocks()
     jest.restoreAllMocks()
   })
-  it('Creates a client with a name', async () => {
+  it('Creates a client with a name', () => {
     const clientName = 'named_' + randomizeName()
 
-    await createClient(clientName)
+    createClient(clientName)
 
     expect(redis.createClient).toHaveBeenCalledWith(expect.objectContaining({ name: clientName }))
   })
-  it('Uses config parser', async () => {
+  it('Uses config parser', () => {
     const myConfig = { setting1: 1, setting2: 2 } as unknown as KthRedisConfig
 
     const parsedConfig = { setting1: 1, addedSetting: 'new stuff' }
 
     mockParseConfig.mockReturnValueOnce(parsedConfig)
 
-    await createClient(randomizeName(), myConfig)
+    createClient(randomizeName(), myConfig)
 
     expect(parseConfig).toHaveBeenCalledWith(myConfig)
     expect(redis.createClient).toHaveBeenCalledWith(expect.objectContaining({ setting1: 1, addedSetting: 'new stuff' }))
   })
-  it('Adds a retry strategy', async () => {
+  it('Adds a retry strategy', () => {
     const mockStrategy = () => {}
 
     mockCreateStrategy.mockReturnValueOnce(mockStrategy)
 
-    await createClient(randomizeName())
+    createClient(randomizeName())
 
     expect(mockCreateStrategy).toHaveBeenCalledWith(expect.any(Function))
     expect(redis.createClient).toHaveBeenCalledWith(
@@ -201,42 +200,41 @@ describe('createClient (creates a client)', () => {
     )
   })
   describe('Add pingInterval on Azure servers', () => {
-    it('checks if config points to Azure server', async () => {
+    it('checks if config points to Azure server', () => {
       const myConfig = { url: 'server.to.check' }
       mockParseConfig.mockReturnValueOnce(myConfig)
 
-      // mockIsAzureServer.mockReturnValueOnce(true)
-      await createClient(randomizeName())
+      createClient(randomizeName())
       expect(mockIsAzureServer).toHaveBeenCalledWith(myConfig)
     })
-    it('Sets pingInterval for Azure servers', async () => {
+    it('Sets pingInterval for Azure servers', () => {
       mockIsAzureServer.mockReturnValueOnce(true)
-      await createClient(randomizeName())
+      createClient(randomizeName())
       expect(redis.createClient).toHaveBeenCalledWith(expect.objectContaining({ pingInterval: 5 * 60 * 1000 }))
     })
 
-    it('Does not set pingInterval for non-Azure servers', async () => {
+    it('Does not set pingInterval for non-Azure servers', () => {
       mockIsAzureServer.mockReturnValueOnce(false)
-      await createClient(randomizeName())
+      createClient(randomizeName())
       expect(redis.createClient).not.toHaveBeenCalledWith(expect.objectContaining({ pingInterval: expect.anything() }))
     })
   })
-  it('Returns a client several times once created', async () => {
+  it('Returns a client several times once created', () => {
     const clientName = 'createOnce_' + randomizeName()
 
     const myClient = {
       ...mockClient,
     }
     mockCreateClient.mockReturnValueOnce(myClient)
-    const client1 = await createClient(clientName)
-    const client2 = await createClient(clientName)
-    const client3 = await createClient(clientName)
+    const client1 = createClient(clientName)
+    const client2 = createClient(clientName)
+    const client3 = createClient(clientName)
 
     expect(mockCreateClient).toHaveBeenCalledTimes(1)
     expect(client1).toBe(client2)
     expect(client1).toBe(client3)
   })
-  it('Does not connect the client', async () => {
+  it('Does not connect the client', () => {
     const clientName = 'doNotConnect_' + randomizeName()
 
     const myClient = {
@@ -246,11 +244,11 @@ describe('createClient (creates a client)', () => {
     myClient.connect = jest.fn(() => (myClient.isOpen = true))
     mockCreateClient.mockReturnValueOnce(myClient)
 
-    await createClient(clientName)
+    createClient(clientName)
 
     expect(myClient.connect).not.toHaveBeenCalled()
   })
-  it('Does not attempt to connect the client if it exists but is not open', async () => {
+  it('Does not attempt to connect the client if it exists but is not open', () => {
     const clientName = 'needsReconnect_' + randomizeName()
 
     const myClient = {
@@ -260,11 +258,11 @@ describe('createClient (creates a client)', () => {
     myClient.connect = jest.fn(() => (myClient.isOpen = true))
     mockCreateClient.mockReturnValueOnce(myClient)
 
-    await createClient(clientName)
+    createClient(clientName)
 
     myClient.connect.mockReset()
     myClient.isOpen = false
-    await createClient(clientName)
+    createClient(clientName)
 
     expect(myClient.connect).not.toHaveBeenCalled()
   })
