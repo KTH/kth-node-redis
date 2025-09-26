@@ -1,0 +1,2 @@
+'*.{js,jsx,ts,tsx}': prettier --write
+'*.{yml,yaml,json,md}': prettier --list-different

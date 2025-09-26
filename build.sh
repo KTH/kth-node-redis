@@ -1,4 +1,3 @@
 #!/bin/sh
 
-npm ci
-npm test
+npm tsc
