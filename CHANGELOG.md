@@ -2,6 +2,12 @@
 
 All notable changes for major version updates will be documented here.
 
+## 4.1.0
+
+### Changed
+
+Retry handler now tries to reconnect forever.
+
 ## 4.0.0
 
 Underlying package `redis` is updated from 3 to 5, which is natively promised based.  
