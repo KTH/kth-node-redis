@@ -32,7 +32,6 @@
   },
   "dependencies": {
     "@kth/log": "^4.0.8",
-    "jest": "^30.4.2",
     "redis": "^5.12.1"
   },
   "devDependencies": {
@@ -41,7 +40,7 @@
     "@types/node": "^24.12.4",
     "eslint": "^9.39.4",
     "husky": "^9.1.7",
-    "jest": "^30.3.0",
+    "jest": "^30.4.2",
     "lint-staged": "^16.4.0",
     "prettier": "^3.8.3",
     "ts-jest": "^29.4.11",
