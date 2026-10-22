@@ -2,6 +2,12 @@
 
 All notable changes for major version updates will be documented here.
 
+## 4.2.0
+
+### Changed
+
+Removed `jest` from dependencies.
+
 ## 4.1.0
 
 ### Changed
