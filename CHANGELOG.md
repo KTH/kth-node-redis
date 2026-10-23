@@ -2,6 +2,13 @@
 
 All notable changes for major version updates will be documented here.
 
+## 5.0.0
+
+### Changed
+
+- Bumped engines `node` from 20 to 24.
+- Updated major, minor and patch versions of dependencies, including `audit fix`
+
 ## 4.2.0
 
 ### Changed
